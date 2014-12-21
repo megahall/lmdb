@@ -238,7 +238,7 @@ int main(int argc, char *argv[])
 			rc = mdb_open(txn, str, 0, &db2);
 			if (rc == MDB_SUCCESS)
 				printf("Status of %s\n", str);
-			free(str);
+			je_free(str);
 			if (rc) continue;
 			rc = mdb_stat(txn, db2, &mst);
 			if (rc) {

@@ -292,7 +292,7 @@ int main(int argc, char *argv[])
 				}
 				mdb_close(env, db2);
 			}
-			free(str);
+			je_free(str);
 			if (rc) continue;
 		}
 		mdb_cursor_close(cursor);

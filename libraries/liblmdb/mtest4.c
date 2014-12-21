@@ -42,7 +42,7 @@ int main(int argc,char * argv[])
 	memset(sval, 0, sizeof(sval));
 
 	count = 510;
-	values = (int *)malloc(count*sizeof(int));
+	values = (int *)je_malloc(count*sizeof(int));
 
 	for(i = 0;i<count;i++) {
 		values[i] = i*5;

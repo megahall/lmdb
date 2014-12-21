@@ -76,11 +76,17 @@ mtest6:	mtest6.o liblmdb.a
 mdb.o: mdb.c lmdb.h midl.h
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c mdb.c
 
+je_utils.o: je_utils.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c je_utils.c
+
 midl.o: midl.c midl.h
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c midl.c
 
 mdb.lo: mdb.c lmdb.h midl.h
 	$(CC) $(CFLAGS) -fPIC $(CPPFLAGS) -c mdb.c -o $@
+
+je_utils.lo: je_utils.c
+	$(CC) $(CFLAGS) -fPIC $(CPPFLAGS) -c je_utils.c -o $@
 
 midl.lo: midl.c midl.h
 	$(CC) $(CFLAGS) -fPIC $(CPPFLAGS) -c midl.c -o $@

@@ -114,7 +114,7 @@ MDB_IDL mdb_midl_alloc(int num)
 void mdb_midl_free(MDB_IDL ids)
 {
 	if (ids)
-		free(ids-1);
+		je_free(ids-1);
 }
 
 int mdb_midl_shrink( MDB_IDL *idp )

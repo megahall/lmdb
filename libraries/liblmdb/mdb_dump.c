@@ -277,7 +277,7 @@ int main(int argc, char *argv[])
 			if (memchr(key.mv_data, '\0', key.mv_size))
 				continue;
 			count++;
-			str = malloc(key.mv_size+1);
+			str = je_malloc(key.mv_size+1);
 			memcpy(str, key.mv_data, key.mv_size);
 			str[key.mv_size] = '\0';
 			rc = mdb_open(txn, str, 0, &db2);

@@ -107,7 +107,7 @@ int main(int argc,char * argv[])
 			E(mdb_txn_commit(txn));
 		}
 	}
-	free(values);
+	je_free(values);
 	printf("Deleted %d values\n", j);
 
 	E(mdb_env_stat(env, &mst));

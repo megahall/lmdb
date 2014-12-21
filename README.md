@@ -7,4 +7,7 @@ This is an unofficial fork by Matthew Hall.
 1. Compiled with clang.
 2. Compiled to special prefix for use with:
    [SDN Sensor](https://github.com/megahall/sdn_sensor).
-3. Uses jemalloc memory allocator.
+3. Uses the explicit jemalloc memory allocator.
+   `malloc`, `calloc`, `realloc`, `free`, `strdup` and `strndup`
+   are replaced with the `je_*` equivalents.
+   A `je_utils.c` file is present for `je_strdup` and `je_strndup`.

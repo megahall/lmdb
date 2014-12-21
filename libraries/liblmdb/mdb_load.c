@@ -338,7 +338,7 @@ int main(int argc, char *argv[])
 		usage();
 
 	dbuf.mv_size = 4096;
-	dbuf.mv_data = malloc(dbuf.mv_size);
+	dbuf.mv_data = je_malloc(dbuf.mv_size);
 
 	if (!(mode & NOHDR))
 		readhdr();
@@ -368,7 +368,7 @@ int main(int argc, char *argv[])
 	}
 
 	kbuf.mv_size = mdb_env_get_maxkeysize(env) * 2 + 2;
-	kbuf.mv_data = malloc(kbuf.mv_size);
+	kbuf.mv_data = je_malloc(kbuf.mv_size);
 
 	while(!Eof) {
 		MDB_val key, data;

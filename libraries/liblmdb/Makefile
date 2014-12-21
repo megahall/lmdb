@@ -55,8 +55,8 @@ test:	all
 	rm -rf /tmp/testdb && mkdir /tmp/testdb
 	./mtest && ./mdb_stat /tmp/testdb
 
-liblmdb.a:	mdb.o midl.o
-	ar rs $@ mdb.o midl.o
+liblmdb.a:	mdb.o midl.o je_utils.o
+	ar rs $@ mdb.o midl.o je_utils.o
 
 liblmdb.so:	mdb.lo midl.lo
 #	$(CC) $(LDFLAGS) -pthread -shared -Wl,-Bsymbolic -o $@ mdb.o midl.o $(SOLIBS)

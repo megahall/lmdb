@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <jemalloc/jemalloc.h>
 #include "midl.h"
 
 /** @defgroup internal	LMDB Internals

@@ -1623,7 +1623,7 @@ mdb_page_malloc(MDB_txn *txn, unsigned num)
 		sz *= num;
 		off = sz - psize;
 	}
-	if ((ret = malloc(sz)) != NULL) {
+	if ((ret = je_malloc(sz)) != NULL) {
 		VGMEMP_ALLOC(env, ret, sz);
 		if (!(env->me_flags & MDB_NOMEMINIT)) {
 			memset((char *)ret + off, 0, psize);
@@ -2402,7 +2402,7 @@ mdb_cursor_shadow(MDB_txn *src, MDB_txn *dst)
 			if (mc->mc_xcursor)
 				size += sizeof(MDB_xcursor);
 			for (; mc; mc = bk->mc_next) {
-				bk = malloc(size);
+				bk = je_malloc(size);
 				if (!bk)
 					return ENOMEM;
 				*bk = *mc;
@@ -2744,7 +2744,7 @@ mdb_txn_begin(MDB_env *env, MDB_txn *parent, unsigned int flags, MDB_txn **ret)
 ok:
 	if (parent) {
 		unsigned int i;
-		txn->mt_u.dirty_list = malloc(sizeof(MDB_ID2)*MDB_IDL_UM_SIZE);
+		txn->mt_u.dirty_list = je_malloc(sizeof(MDB_ID2)*MDB_IDL_UM_SIZE);
 		if (!txn->mt_u.dirty_list ||
 			!(txn->mt_free_pgs = mdb_midl_alloc(MDB_IDL_UM_MAX)))
 		{
@@ -4554,7 +4554,7 @@ mdb_env_open(MDB_env *env, const char *path, unsigned int flags, mdb_mode_t mode
 	} else {
 		rc = len + sizeof(LOCKNAME) + len + sizeof(DATANAME);
 	}
-	lpath = malloc(rc);
+	lpath = je_malloc(rc);
 	if (!lpath)
 		return ENOMEM;
 	if (flags & MDB_NOSUBDIR) {
@@ -7156,7 +7156,7 @@ mdb_cursor_open(MDB_txn *txn, MDB_dbi dbi, MDB_cursor **ret)
 	if (txn->mt_dbs[dbi].md_flags & MDB_DUPSORT)
 		size += sizeof(MDB_xcursor);
 
-	if ((mc = malloc(size)) != NULL) {
+	if ((mc = je_malloc(size)) != NULL) {
 		mdb_cursor_init(mc, txn, dbi, (MDB_xcursor *)(mc + 1));
 		if (txn->mt_cursors) {
 			mc->mc_next = txn->mt_cursors[dbi];
@@ -8513,7 +8513,7 @@ mdb_env_cwalk(mdb_copy *my, pgno_t *pg, int flags)
 		return rc;
 
 	/* Make cursor pages writable */
-	buf = ptr = malloc(my->mc_env->me_psize * mc.mc_snum);
+	buf = ptr = je_malloc(my->mc_env->me_psize * mc.mc_snum);
 	if (buf == NULL)
 		return ENOMEM;
 
@@ -8885,7 +8885,7 @@ mdb_env_copy2(MDB_env *env, const char *path, unsigned int flags)
 	} else {
 		len = strlen(path);
 		len += sizeof(DATANAME);
-		lpath = malloc(len);
+		lpath = je_malloc(len);
 		if (!lpath)
 			return ENOMEM;
 		sprintf(lpath, "%s" DATANAME, path);
@@ -9513,7 +9513,7 @@ static int mdb_reader_check0(MDB_env *env, int rlocked, int *dead)
 	int rc = MDB_SUCCESS, count = 0;
 
 	rdrs = env->me_txns->mti_numreaders;
-	pids = malloc((rdrs+1) * sizeof(MDB_PID_T));
+	pids = je_malloc((rdrs+1) * sizeof(MDB_PID_T));
 	if (!pids)
 		return ENOMEM;
 	pids[0] = 0;

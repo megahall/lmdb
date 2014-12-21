@@ -2720,8 +2720,8 @@ mdb_txn_begin(MDB_env *env, MDB_txn *parent, unsigned int flags, MDB_txn **ret)
 	}
 	size += env->me_maxdbs * (sizeof(MDB_db)+1);
 
-	if ((txn = calloc(1, size)) == NULL) {
-		DPRINTF(("calloc: %s", strerror(errno)));
+	if ((txn = je_calloc(1, size)) == NULL) {
+		DPRINTF(("je_calloc: %s", strerror(errno)));
 		return ENOMEM;
 	}
 	txn->mt_dbs = (MDB_db *) ((char *)txn + tsize);
@@ -3602,7 +3602,7 @@ mdb_env_init_meta(MDB_env *env, MDB_meta *meta)
 
 	psize = env->me_psize;
 
-	p = calloc(2, psize);
+	p = je_calloc(2, psize);
 	p->mp_pgno = 0;
 	p->mp_flags = P_META;
 	*(MDB_meta *)METADATA(p) = *meta;
@@ -3763,7 +3763,7 @@ mdb_env_create(MDB_env **env)
 {
 	MDB_env *e;
 
-	e = calloc(1, sizeof(MDB_env));
+	e = je_calloc(1, sizeof(MDB_env));
 	if (!e)
 		return ENOMEM;
 
@@ -4574,17 +4574,17 @@ mdb_env_open(MDB_env *env, const char *path, unsigned int flags, mdb_mode_t mode
 		flags &= ~MDB_WRITEMAP;
 	} else {
 		if (!((env->me_free_pgs = mdb_midl_alloc(MDB_IDL_UM_MAX)) &&
-			  (env->me_dirty_list = calloc(MDB_IDL_UM_SIZE, sizeof(MDB_ID2)))))
+			  (env->me_dirty_list = je_calloc(MDB_IDL_UM_SIZE, sizeof(MDB_ID2)))))
 			rc = ENOMEM;
 	}
 	env->me_flags = flags |= MDB_ENV_ACTIVE;
 	if (rc)
 		goto leave;
 
-	env->me_path = strdup(path);
-	env->me_dbxs = calloc(env->me_maxdbs, sizeof(MDB_dbx));
-	env->me_dbflags = calloc(env->me_maxdbs, sizeof(uint16_t));
-	env->me_dbiseqs = calloc(env->me_maxdbs, sizeof(unsigned int));
+	env->me_path = je_strdup(path);
+	env->me_dbxs = je_calloc(env->me_maxdbs, sizeof(MDB_dbx));
+	env->me_dbflags = je_calloc(env->me_maxdbs, sizeof(uint16_t));
+	env->me_dbiseqs = je_calloc(env->me_maxdbs, sizeof(unsigned int));
 	if (!(env->me_dbxs && env->me_path && env->me_dbflags && env->me_dbiseqs)) {
 		rc = ENOMEM;
 		goto leave;
@@ -4655,13 +4655,13 @@ mdb_env_open(MDB_env *env, const char *path, unsigned int flags, mdb_mode_t mode
 				goto leave;
 		}
 		if (!((flags & MDB_RDONLY) ||
-			  (env->me_pbuf = calloc(1, env->me_psize))))
+			  (env->me_pbuf = je_calloc(1, env->me_psize))))
 			rc = ENOMEM;
 		if (!(flags & MDB_RDONLY)) {
 			MDB_txn *txn;
 			int tsize = sizeof(MDB_txn), size = tsize + env->me_maxdbs *
 				(sizeof(MDB_db)+sizeof(MDB_cursor *)+sizeof(unsigned int)+1);
-			txn = calloc(1, size);
+			txn = je_calloc(1, size);
 			if (txn) {
 				txn->mt_dbs = (MDB_db *)((char *)txn + tsize);
 				txn->mt_cursors = (MDB_cursor **)(txn->mt_dbs + env->me_maxdbs);
@@ -9172,7 +9172,7 @@ int mdb_dbi_open(MDB_txn *txn, const char *name, unsigned int flags, MDB_dbi *db
 	/* OK, got info, add to table */
 	if (rc == MDB_SUCCESS) {
 		unsigned int slot = unused ? unused : txn->mt_numdbs;
-		txn->mt_dbxs[slot].md_name.mv_data = strdup(name);
+		txn->mt_dbxs[slot].md_name.mv_data = je_strdup(name);
 		txn->mt_dbxs[slot].md_name.mv_size = len;
 		txn->mt_dbxs[slot].md_rel = NULL;
 		txn->mt_dbflags[slot] = dbflag;

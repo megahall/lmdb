@@ -52,7 +52,7 @@ int main(int argc,char * argv[])
 	E(mdb_cursor_open(txn, dbi, &cursor));
 	E(mdb_stat(txn, dbi, &mst));
 
-	sval = calloc(1, mst.ms_psize / 4);
+	sval = je_calloc(1, mst.ms_psize / 4);
 	key.mv_size = sizeof(long);
 	key.mv_data = &kval;
 	data.mv_size = mst.ms_psize / 4 - 30;

@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <jemalloc/jemalloc.h>
 #include "lmdb.h"
 
 #define E(expr) CHECK((rc = (expr)) == MDB_SUCCESS, #expr)

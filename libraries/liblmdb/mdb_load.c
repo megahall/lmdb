@@ -92,8 +92,8 @@ static void readhdr(void)
 		} else if (!strncmp(dbuf.mv_data, "database=", STRLENOF("database="))) {
 			ptr = memchr(dbuf.mv_data, '\n', dbuf.mv_size);
 			if (ptr) *ptr = '\0';
-			if (subname) free(subname);
-			subname = strdup((char *)dbuf.mv_data+STRLENOF("database="));
+			if (subname) je_free(subname);
+			subname = je_strdup((char *)dbuf.mv_data+STRLENOF("database="));
 		} else if (!strncmp(dbuf.mv_data, "type=", STRLENOF("type="))) {
 			if (strncmp((char *)dbuf.mv_data+STRLENOF("type="), "btree", STRLENOF("btree")))  {
 				fprintf(stderr, "%s: line %" Z "d: unsupported type %s\n",

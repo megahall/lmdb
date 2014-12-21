@@ -321,7 +321,7 @@ int main(int argc, char *argv[])
 			envflags |= MDB_NOSUBDIR;
 			break;
 		case 's':
-			subname = strdup(optarg);
+			subname = je_strdup(optarg);
 			break;
 		case 'N':
 			putflags = MDB_NOOVERWRITE|MDB_NODUPDATA;

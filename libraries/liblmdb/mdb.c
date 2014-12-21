@@ -1655,7 +1655,7 @@ mdb_dpage_free(MDB_env *env, MDB_page *dp)
 	} else {
 		/* large pages just get freed directly */
 		VGMEMP_FREE(env, dp);
-		free(dp);
+		je_free(dp);
 	}
 }
 
@@ -2459,7 +2459,7 @@ mdb_cursors_close(MDB_txn *txn, unsigned merge)
 				mc = bk;
 			}
 			/* Only malloced cursors are permanently tracked. */
-			free(mc);
+			je_free(mc);
 		}
 		cursors[i] = NULL;
 	}
@@ -2748,8 +2748,8 @@ ok:
 		if (!txn->mt_u.dirty_list ||
 			!(txn->mt_free_pgs = mdb_midl_alloc(MDB_IDL_UM_MAX)))
 		{
-			free(txn->mt_u.dirty_list);
-			free(txn);
+			je_free(txn->mt_u.dirty_list);
+			je_free(txn);
 			return ENOMEM;
 		}
 		txn->mt_txnid = parent->mt_txnid;
@@ -2786,7 +2786,7 @@ ok:
 	}
 	if (rc) {
 		if (txn != env->me_txn0)
-			free(txn);
+			je_free(txn);
 	} else {
 		*ret = txn;
 		DPRINTF(("begin txn %"Z"u%c %p on mdbenv %p, root page %"Z"u",
@@ -2831,7 +2831,7 @@ mdb_dbis_update(MDB_txn *txn, int keep)
 					env->me_dbxs[i].md_name.mv_size = 0;
 					env->me_dbflags[i] = 0;
 					env->me_dbiseqs[i]++;
-					free(ptr);
+					je_free(ptr);
 				}
 			}
 		}
@@ -2889,7 +2889,7 @@ mdb_txn_reset0(MDB_txn *txn, const char *act)
 			env->me_pgstate = ((MDB_ntxn *)txn)->mnt_pgstate;
 			mdb_midl_free(txn->mt_free_pgs);
 			mdb_midl_free(txn->mt_spill_pgs);
-			free(txn->mt_u.dirty_list);
+			je_free(txn->mt_u.dirty_list);
 		}
 
 		mdb_midl_free(pghead);
@@ -2924,7 +2924,7 @@ mdb_txn_abort(MDB_txn *txn)
 		txn->mt_u.reader->mr_pid = 0;
 
 	if (txn != txn->mt_env->me_txn0)
-		free(txn);
+		je_free(txn);
 }
 
 /** Save the freelist as of this transaction to the freeDB.
@@ -3380,11 +3380,11 @@ mdb_txn_commit(MDB_txn *txn)
 			while (yp < dst[x].mid)
 				dst[i--] = dst[x--];
 			if (yp == dst[x].mid)
-				free(dst[x--].mptr);
+				je_free(dst[x--].mptr);
 		}
 		mdb_tassert(txn, i == x);
 		dst[0].mid = len;
-		free(txn->mt_u.dirty_list);
+		je_free(txn->mt_u.dirty_list);
 		parent->mt_dirty_room = txn->mt_dirty_room;
 		if (txn->mt_spill_pgs) {
 			if (parent->mt_spill_pgs) {
@@ -3407,7 +3407,7 @@ mdb_txn_commit(MDB_txn *txn)
 
 		parent->mt_child = NULL;
 		mdb_midl_free(((MDB_ntxn *)txn)->mnt_pgstate.mf_pghead);
-		free(txn);
+		je_free(txn);
 		return rc;
 	}
 
@@ -3485,7 +3485,7 @@ done:
 	if (env->me_txns)
 		UNLOCK_MUTEX(MDB_MUTEX(env, w));
 	if (txn != env->me_txn0)
-		free(txn);
+		je_free(txn);
 
 	return MDB_SUCCESS;
 
@@ -3619,7 +3619,7 @@ mdb_env_init_meta(MDB_env *env, MDB_meta *meta)
 		rc = MDB_SUCCESS;
 	else
 		rc = ENOSPC;
-	free(p);
+	je_free(p);
 	return rc;
 }
 
@@ -4680,7 +4680,7 @@ leave:
 	if (rc) {
 		mdb_env_close0(env, excl);
 	}
-	free(lpath);
+	je_free(lpath);
 	return rc;
 }
 
@@ -4695,15 +4695,15 @@ mdb_env_close0(MDB_env *env, int excl)
 
 	/* Doing this here since me_dbxs may not exist during mdb_env_close */
 	for (i = env->me_maxdbs; --i > MAIN_DBI; )
-		free(env->me_dbxs[i].md_name.mv_data);
+		je_free(env->me_dbxs[i].md_name.mv_data);
 
-	free(env->me_pbuf);
-	free(env->me_dbiseqs);
-	free(env->me_dbflags);
-	free(env->me_dbxs);
-	free(env->me_path);
-	free(env->me_dirty_list);
-	free(env->me_txn0);
+	je_free(env->me_pbuf);
+	je_free(env->me_dbiseqs);
+	je_free(env->me_dbflags);
+	je_free(env->me_dbxs);
+	je_free(env->me_path);
+	je_free(env->me_dirty_list);
+	je_free(env->me_txn0);
 	mdb_midl_free(env->me_free_pgs);
 
 	if (env->me_flags & MDB_ENV_TXKEY) {
@@ -4782,11 +4782,11 @@ mdb_env_close(MDB_env *env)
 	while ((dp = env->me_dpages) != NULL) {
 		VGMEMP_DEFINED(&dp->mp_next, sizeof(dp->mp_next));
 		env->me_dpages = dp->mp_next;
-		free(dp);
+		je_free(dp);
 	}
 
 	mdb_env_close0(env, 0);
-	free(env);
+	je_free(env);
 }
 
 /** Compare two items pointing at aligned size_t's */
@@ -7232,7 +7232,7 @@ mdb_cursor_close(MDB_cursor *mc)
 			if (*prev == mc)
 				*prev = mc->mc_next;
 		}
-		free(mc);
+		je_free(mc);
 	}
 }
 
@@ -8639,7 +8639,7 @@ again:
 		}
 	}
 done:
-	free(buf);
+	je_free(buf);
 	return rc;
 }
 
@@ -8753,7 +8753,7 @@ mdb_env_copyfd1(MDB_env *env, HANDLE fd)
 #else
 	pthread_cond_destroy(&my.mc_cond);
 	pthread_mutex_destroy(&my.mc_mutex);
-	free(my.mc_wbuf[0]);
+	je_free(my.mc_wbuf[0]);
 #endif
 	return rc;
 }
@@ -8925,7 +8925,7 @@ mdb_env_copy2(MDB_env *env, const char *path, unsigned int flags)
 
 leave:
 	if (!(env->me_flags & MDB_NOSUBDIR))
-		free(lpath);
+		je_free(lpath);
 	if (newfd != INVALID_HANDLE_VALUE)
 		if (close(newfd) < 0 && rc == MDB_SUCCESS)
 			rc = ErrCode();
@@ -9222,7 +9222,7 @@ void mdb_dbi_close(MDB_env *env, MDB_dbi dbi)
 		env->me_dbxs[dbi].md_name.mv_size = 0;
 		env->me_dbflags[dbi] = 0;
 		env->me_dbiseqs[dbi]++;
-		free(ptr);
+		je_free(ptr);
 	}
 }
 
@@ -9549,7 +9549,7 @@ static int mdb_reader_check0(MDB_env *env, int rlocked, int *dead)
 			}
 		}
 	}
-	free(pids);
+	je_free(pids);
 	if (dead)
 		*dead = count;
 	return rc;

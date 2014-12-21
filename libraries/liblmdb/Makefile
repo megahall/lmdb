@@ -58,9 +58,9 @@ test:	all
 liblmdb.a:	mdb.o midl.o je_utils.o
 	ar rs $@ mdb.o midl.o je_utils.o
 
-liblmdb.so:	mdb.lo midl.lo
-#	$(CC) $(LDFLAGS) -pthread -shared -Wl,-Bsymbolic -o $@ mdb.o midl.o $(SOLIBS)
-	$(CC) $(LDFLAGS) -pthread -shared -o $@ mdb.lo midl.lo $(SOLIBS)
+liblmdb.so:	mdb.lo midl.lo je_utils.lo
+#	$(CC) $(LDFLAGS) -pthread -shared -Wl,-Bsymbolic -o $@ mdb.o midl.o je_utils.o $(SOLIBS)
+	$(CC) $(LDFLAGS) -pthread -shared -o $@ mdb.lo midl.lo je_utils.lo $(SOLIBS)
 
 mdb_stat: mdb_stat.o liblmdb.a
 mdb_copy: mdb_copy.o liblmdb.a

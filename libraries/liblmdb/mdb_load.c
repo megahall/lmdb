@@ -211,7 +211,7 @@ badend:
 
 	/* Is buffer too short? */
 	while (c1[len-1] != '\n') {
-		buf->mv_data = realloc(buf->mv_data, buf->mv_size*2);
+		buf->mv_data = je_realloc(buf->mv_data, buf->mv_size*2);
 		if (!buf->mv_data) {
 			Eof = 1;
 			fprintf(stderr, "%s: line %" Z "d: out of memory, line too long\n",

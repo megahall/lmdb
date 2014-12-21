@@ -16,14 +16,22 @@
 # There may be other macros in mdb.c of interest. You should
 # read mdb.c before changing any of them.
 #
-CC	= gcc
-W	= -W -Wall -Wno-unused-parameter -Wbad-function-cast -Wuninitialized
-THREADS = -pthread
-OPT = -O2 -g
-CFLAGS	= $(THREADS) $(OPT) $(W) $(XCFLAGS)
-LDLIBS	=
-SOLIBS	=
-prefix	= /usr/local
+CC		= clang
+W		= -Wall -Wextra -Wshadow -Wtrigraphs -Wuninitialized \
+		  -Wno-unused-parameter -Wbad-function-cast \
+		  -Wunreachable-code -Wno-unused-label \
+		  -Wwrite-strings -Wstrict-aliasing \
+		  -Wstrict-overflow -Warray-bounds \
+		  -Wpointer-arith -Wvolatile-register-var \
+		  -Wno-unused-parameter
+INCLUDES	= -I/usr/local/jemalloc/include
+THREADS		= -pthread
+OPT		= -std=gnu11 -g
+CFLAGS		= $(THREADS) $(OPT) $(W) $(INCLUDES) $(XCFLAGS)
+LDFLAGS		= -ljemalloc -lunwind \
+		  -L/usr/local/jemalloc/lib -Wl,-rpath,/usr/local/jemalloc/lib
+SOLIBS		=
+prefix		= /usr/local/lmdb
 
 ########################################################################
 

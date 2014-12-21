@@ -18,6 +18,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <signal.h>
+#include <jemalloc/jemalloc.h>
 #include "lmdb.h"
 
 #ifdef _WIN32

@@ -17,6 +17,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <jemalloc/jemalloc.h>
+#include "je_utils.h"
 #include "lmdb.h"
 
 #define PRINT	1

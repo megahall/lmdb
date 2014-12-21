@@ -49,11 +49,11 @@ install: $(ILIBS) $(IPROGS) $(IHDRS)
 	for f in $(IDOCS); do cp $$f $(DESTDIR)$(prefix)/man/man1; done
 
 clean:
-	rm -rf $(PROGS) *.[ao] *.[ls]o *~ testdb
+	rm -rf $(PROGS) *.[ao] *.[ls]o *~ /tmp/testdb
 
 test:	all
-	rm -rf testdb && mkdir testdb
-	./mtest && ./mdb_stat testdb
+	rm -rf /tmp/testdb && mkdir /tmp/testdb
+	./mtest && ./mdb_stat /tmp/testdb
 
 liblmdb.a:	mdb.o midl.o
 	ar rs $@ mdb.o midl.o
@@ -97,7 +97,7 @@ COV_OBJS=xmdb.o xmidl.o
 coverage: xmtest
 	for i in mtest*.c [0-9]*.c; do j=`basename \$$i .c`; $(MAKE) $$j.o; \
 		gcc -o x$$j $$j.o $(COV_OBJS) -pthread $(COV_FLAGS); \
-		rm -rf testdb; mkdir testdb; ./x$$j; done
+		rm -rf /tmp/testdb; mkdir /tmp/testdb; ./x$$j; done
 	gcov xmdb.c
 	gcov xmidl.c
 

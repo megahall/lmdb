@@ -89,11 +89,13 @@ extern int cacheflush(char *addr, int nbytes, int cache);
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <jemalloc/jemalloc.h>
+#include "je_utils.h"
 
 #if defined(__sun) || defined(ANDROID)
 /* Most platforms have posix_memalign, older may only have memalign */
 #define HAVE_MEMALIGN	1
-#include <malloc.h>
+#include <jemalloc/jemalloc.h>
 #endif
 
 #if !(defined(BYTE_ORDER) || defined(__BYTE_ORDER))

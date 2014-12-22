@@ -26,7 +26,7 @@ W		= -Wall -Wextra -Wshadow -Wtrigraphs -Wuninitialized \
 		  -Wno-unused-parameter
 INCLUDES	= -I/usr/local/jemalloc/include
 THREADS		= -pthread
-OPT		= -std=gnu11 -g
+OPT		= -std=gnu11 -g -O2
 CFLAGS		= $(THREADS) $(OPT) $(W) $(INCLUDES) $(XCFLAGS)
 LDFLAGS		= -ljemalloc -lunwind \
 		  -L/usr/local/jemalloc/lib -Wl,-rpath,/usr/local/jemalloc/lib
